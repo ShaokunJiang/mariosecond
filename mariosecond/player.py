@@ -106,6 +106,14 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE] and self.on_ground:
             self.jump() 
             self.create_jump_particles(self.rect.midbottom)
+        elif keys[pygame.K_w] and self.on_ground:
+                self.jump() 
+                self.create_jump_particles(self.rect.midbottom)
+        elif keys[pygame.K_UP] and self.on_ground:
+            self.jump() 
+            self.create_jump_particles(self.rect.midbottom)
+        
+        
 
     def get_status(self):
         if self.direction.y < 0:
