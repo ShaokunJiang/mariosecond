@@ -6,12 +6,19 @@ from Enemy import enemy
 from decoration import Sky,water, Clouds
 from player import Player
 from particles import ParticleEffect
+from game_data import levels 
 class Level:
-    def __init__(self,level_data,surface):
+    def __init__(self,current_level,surface,create_overworld):
         # general setup
         self.display_surface = surface
         self.world_shift = 0
         self.current_x = None
+        
+        # overworld connection
+        self.create_overworld = create_overworld
+        self.current_level = current_level
+        level_data = levels[self.current_level]
+        self.new_max_level = level_data['unlock']
 
         #player 
         player_layout = import_csv_layout(level_data['player'])
@@ -52,8 +59,8 @@ class Level:
         self.enemy_sprites = self.create_tile_group(enemy_layout,'enemies')
 
         # Constraint
-        constraint_layout = import_csv_layout(level_data['constraint'])
-        self.constraint_sprites = self.create_tile_group(constraint_layout,'constraint')
+        constraint_layout = import_csv_layout(level_data['constraints'])
+        self.constraint_sprites = self.create_tile_group(constraint_layout,'constraints')
 
         #decoration
         self.sky = Sky(8)
@@ -96,7 +103,7 @@ class Level:
                     if type == 'enemies':
                         sprite = enemy(tile_size,x,y)
 
-                    if type == 'constraint':
+                    if type == 'constraints':
                         sprite = Tile(tile_size,x,y)
                     
                     
@@ -120,6 +127,13 @@ class Level:
             if pygame.sprite.spritecollide(enemy,self.constraint_sprites,False):
                 enemy.reverse()
 
+    def create_jump_particles(self,pos):
+        if self.player.sprite.facing_right:
+            pos -= pygame.math.Vector2(10,5)
+        else:
+             pos += pygame.math.Vector2(10,-5)
+        jump_particle_sprite = ParticleEffect(pos,'jump')
+        self.dust_sprite.add(jump_particle_sprite)
 
     def horizontal_movement_collision(self):
         player = self.player.sprite
@@ -193,14 +207,14 @@ class Level:
                 offset = pygame.math.Vector2(-10,15)
             fall_dust_particle = ParticleEffect(self.player.sprite.rect.midbottom-offset,'land')
             self.dust_sprite.add(fall_dust_particle)
+
+    def check_death(self):
+        if self.player.sprite.rect.top > screen_height:
+            self.create_overworld(self.current_level,0)
             
-    def create_jump_particles(self,pos):
-        if self.player.sprite.facing_right:
-            pos -= pygame.math.Vector2(10,5)
-        else:
-             pos += pygame.math.Vector2(10,-5)
-        jump_particle_sprite = ParticleEffect(pos,'jump')
-        self.dust_sprite.add(jump_particle_sprite)
+    def check_win(self):
+        if pygame.sprite.spritecollide(self.player.sprite, self.goal,False):
+            self.create_overworld(self.current_level,self.new_max_level)
 
     def run(self):
         # runs the level 
@@ -254,7 +268,8 @@ class Level:
         self.player.draw(self.display_surface)
         self.goal.update(self.world_shift)
         self.goal.draw(self.display_surface)
-
+        self.check_death()
+        self.check_win()
         
         #Water 
         self.water.draw(self.display_surface,self.world_shift)
