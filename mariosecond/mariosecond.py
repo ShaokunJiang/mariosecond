@@ -34,7 +34,7 @@ class Game:
         else:
             self.level.run()
             self.UI.show_health(50,100)
-            self.UI.show_coins(12)
+            self.UI.show_coins(self.coins)
 #pygame setup
 pygame.init()
 screen=pygame.display.set_mode((screen_width,screen_height))
