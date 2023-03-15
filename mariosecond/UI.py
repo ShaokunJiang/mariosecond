@@ -6,15 +6,22 @@ class ui:
         self.display_surface = surface
 
         # health
-        self.health_bar = pygame.image.load('C:\\Users\\CMP_ShJiang\\source\\repos\\platformerinpygame\\graphics\\ui\\health_bar.png')
-        
+        self.health_bar = pygame.image.load('C:\\Users\\shaok\\source\\repos\\2-7-2023 cmp hw\\2DMariostyleplatformer\\graphics\\ui\\health_bar.png').convert_alpha()
+        self.health_bar_topleft = (54,39)
+        self.bar_max_width = 152 
+        self.bar_height = 4 
+
         #coins
-        self.coin = pygame.image.load('C:\\Users\\CMP_ShJiang\\source\\repos\\platformerinpygame\\graphics\\ui\\coin.png')
+        self.coin = pygame.image.load('C:\\Users\\shaok\\source\\repos\\2-7-2023 cmp hw\\2DMariostyleplatformer\\graphics\\ui\\coin.png').convert_alpha()
         self.coin_rect = self.coin.get_rect(topleft = (50,61))
-        self.font = pygame.font.Font('C:\\Users\\CMP_ShJiang\\source\\repos\\platformerinpygame\\graphics\\ui\\ARCADEPI.TTF',30)
+        self.font = pygame.font.Font('C:\\Users\\shaok\\source\\repos\\2-7-2023 cmp hw\\2DMariostyleplatformer\\graphics\\ui\\ARCADEPI.TTF',30)
 
     def show_health(self,current,full):
         self.display_surface.blit(self.health_bar,(20,10))
+        current_health_ratio = current / full 
+        current_bar_width = self.bar_max_width * current_health_ratio
+        health_bar_rect = pygame.Rect((self.health_bar_topleft),(current_bar_width,self.bar_height))
+        pygame.draw.rect(self.display_surface,'#dc4949',health_bar_rect)
 
 
     def show_coins(self,amount):
