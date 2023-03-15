@@ -10,6 +10,9 @@ class ParticleEffect(pygame.sprite.Sprite):
             self.frames= import_folder('C:\\Users\\shaok\\source\\repos\\2-7-2023 cmp hw\\2DMariostyleplatformer\\graphics\\character\\dust_particles\\jump')
         if type == 'land':
             self.frames= import_folder('C:\\Users\\shaok\\source\\repos\\2-7-2023 cmp hw\\2DMariostyleplatformer\\graphics\\character\\dust_particles\\land')
+        
+        if type == 'explosion':
+            self.frames = import_folder('C:\\Users\\shaok\\source\\repos\\2-7-2023 cmp hw\\2DMariostyleplatformer\\graphics\\enemy\\explosion')
         self.image =self.frames[self.frame_index]
         self.rect = self.image.get_rect(center = pos)
 
